@@ -46,18 +46,36 @@ eval_formula <- function(x, expr, envir, side_effect) {
 
 eval_question <- function(x, expr, envir) {
   if(length(expr) == 2L) {
+    # ? expr
     expr <- expr[[2L]]
     value <- pipe_lambda(x, expr, envir)
     cat("? ")
     print(expr)
-  } else if(length(expr) == 3L && is.character(expr[[2L]])) {
-    value <- pipe_lambda(x, expr[[3L]], envir)
-    cat("?", expr[[2L]], "\n")
+  } else if(length(expr) == 3L) {
+    # ? as binary or ternary operator
+    if(is.character(expr[[2L]])) {
+      # character ? expr
+      value <- pipe_lambda(x, expr[[3L]], envir)
+      cat("?", expr[[2L]], "\n")
+    } else {
+      # logical ? expr_true : expr_false
+      return(eval_ternary(x, expr[[2L]], expr[[3L]], envir))
+    }
   } else {
     stop("Invalid question expression", call. = FALSE)
   }
   print(value)
   x
+}
+
+eval_ternary <- function(x, cond, expr, envir) {
+  cond <- pipe_dot(x, cond, envir)
+  if(!is.logical(cond))
+    stop("Condition must be a logical value", call. = FALSE)
+  if(is.call(expr) && expr[[1L]] == ":") {
+    pipe_dot(x, expr[[if(cond) 2L else 3L]], envir)
+  } else
+    stop("Invalid usage of ternary operator `?:`", call. = FALSE)
 }
 
 eval_equal <- function(x, expr, envir, side_effect) {

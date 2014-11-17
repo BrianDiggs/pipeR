@@ -1,7 +1,7 @@
 Package: pipeR
 Type: Package
 Title: Multi-paradigm pipeline implementation for R
-Version: 0.5.3
+Version: 0.5.4
 Author: Kun Ren <ken@renkun.me>
 Maintainer: Kun Ren <ken@renkun.me>
 Description: Provides various styles of function chaining methods: Pipe

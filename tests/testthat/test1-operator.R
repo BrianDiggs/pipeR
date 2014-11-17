@@ -195,3 +195,18 @@ test_that("printing", {
     z <- 1:10 %>>% "numbers" %>>% sum
   }, "^numbers\\s*$")
 })
+
+test_that("ternary", {
+  expect_equal({
+    1:10 %>>%
+      (length(.) >= 8 ? 1 : 0)
+  }, 1)
+  expect_error({
+    1:10 %>>%
+      (length(.) >= 8 ? 1 ~ 0)
+  }, "Invalid usage")
+  expect_error({
+    1:10 %>>%
+      (length(.) >= 8 ? 1)
+  }, "Invalid usage")
+})
